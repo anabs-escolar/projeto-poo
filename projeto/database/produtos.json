@@ -1,12 +1,5 @@
 [
     {
-        "id": 5,
-        "descricao": "Mouse ergon\u00f4mico original da shopee",
-        "preco": 1082.4,
-        "estoque": 90,
-        "categoria": 1
-    },
-    {
         "id": 2,
         "descricao": "Mouse simples de escrit\u00f3rio gamer",
         "preco": 0.0,
@@ -39,6 +32,13 @@
         "descricao": "Monitor",
         "preco": 220.00000000000003,
         "estoque": 488,
+        "categoria": 1
+    },
+    {
+        "id": 5,
+        "descricao": "Mouse ergon\u00f4mico original da shopee",
+        "preco": 1082.4,
+        "estoque": 89,
         "categoria": 1
     }
 ]

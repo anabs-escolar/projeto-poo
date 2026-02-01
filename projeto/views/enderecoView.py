@@ -59,3 +59,8 @@ class EnderecoView:
 
         endereco = EnderecoDAO.listar_id(id)
         EnderecoDAO.excluir(endereco)
+
+    @staticmethod
+    def endereco_listar_por_cliente(cliente_id: int):
+        enderecos = EnderecoDAO.listar()
+        return [e for e in enderecos if e.getIdCliente() == cliente_id]

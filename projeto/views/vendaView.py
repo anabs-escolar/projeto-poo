@@ -56,7 +56,7 @@ class VendaView:
                 VendaItemDAO.inserir(item)
                 return
 
-        carrinho = Venda(0, data, carrinho, cliente_id)
+        carrinho = Venda(0, data, carrinho, cliente_id, endereco=None)
         VendaDAO.inserir(carrinho)
         item = VendaItem(
             id=0,
@@ -84,7 +84,7 @@ class VendaView:
 
         return {"carrinho": carrinho, "itens": itens, "produtos": produtos}
 
-    def carrinho_comprar(cliente_id, comprar=False):
+    def carrinho_comprar(cliente_id, endereco_id, comprar=False):
         carrinho = VendaView.vendas_listar(
             is_carrinho=True, carrinho_only=True, cliente_id=cliente_id
         )["vendas"][0]
@@ -100,10 +100,12 @@ class VendaView:
 
         if comprar:
             carrinho.setCarrinho(False)
+            carrinho.setEndereco(endereco_id)
             VendaDAO.atualizar(carrinho)
-            return {"carrinho": None, "itens": None, "status": True}
 
-        return {"carrinho": carrinho, "itens": itens, "status": False}
+            return {"status": True}
+
+        return {"status": False}
 
     # NOVA FUNCIONALIDADE
     def carrinho_esvaziar(cliente_id):

@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from views.produtoView import ProdutoView
+from views.enderecoView import EnderecoView
 from views.vendaView import VendaView
 from datetime import datetime
 import time
@@ -101,10 +102,28 @@ class ClienteUI:
 
             st.write(f"Total: R$ {preco_total:.2f}")
 
+            enderecos = EnderecoView.endereco_listar_por_cliente(
+                st.session_state["cliente_id"]
+            )
+
+            endereco_selecionado = st.selectbox(
+                "Endereço de entrega",
+                enderecos,
+                index=None,
+                placeholder="Selecione um endereço",
+            )
+
             if st.button("Finalizar compra"):
+                if endereco_selecionado is None:
+                    st.warning("Selecione um endereço para entrega")
+                    return
+
                 VendaView.carrinho_comprar(
-                    cliente_id=st.session_state["cliente_id"], comprar=True
+                    cliente_id=st.session_state["cliente_id"],
+                    endereco_id=endereco_selecionado.getId(),
+                    comprar=True,
                 )
+
                 st.success("Compra finalizada")
                 time.sleep(2)
                 st.rerun()
@@ -125,6 +144,8 @@ class ClienteUI:
             is_carrinho=False, cliente_id=st.session_state["cliente_id"]
         )
 
+        enderecos = EnderecoView.endereco_listar()
+
         for venda in dados["vendas"]:
             prod_list_dict = []
             preco_total = 0
@@ -132,6 +153,14 @@ class ClienteUI:
             cliente = st.session_state["cliente_nome"]
             data = venda.getData().strftime("%d/%m/%Y")
             venda_id = venda.getId()
+
+            # 🔹 Resolver endereço da venda
+            endereco_str = "Endereço não informado"
+            if venda.getEndereco() is not None:
+                for end in enderecos:
+                    if end.getId() == venda.getEndereco():
+                        endereco_str = str(end)
+                        break
 
             for item in dados["itens"]:
                 if item.getVenda() == venda_id:
@@ -155,7 +184,10 @@ class ClienteUI:
                     )
 
             st.write(
-                f"Venda: {venda_id} | Cliente: {cliente} | Realização da venda: {data}"
+                f"""
+                **Data:** {data}  
+                **Endereço de entrega:** {endereco_str}
+                """
             )
 
             df = pd.DataFrame(prod_list_dict)
@@ -165,4 +197,5 @@ class ClienteUI:
                 column_order=["produto", "quantidade", "preco_unitario", "subtotal"],
             )
 
-            st.write(f"Total: R$ {preco_total:.2f}")
+            st.write(f"**Total:** R$ {preco_total:.2f}")
+            st.divider()

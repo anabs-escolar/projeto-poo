@@ -1,1 +1,13 @@
-[]
+[
+    {
+        "id": 1,
+        "logradouro": "Lou\u00e7a",
+        "numero": "213",
+        "complemento": "*",
+        "bairro": "BAIBAI",
+        "cidade": "NAtal",
+        "estado": "RN",
+        "cep": "12312-132",
+        "id_cliente": 6
+    }
+]

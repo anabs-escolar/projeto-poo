@@ -196,11 +196,14 @@ class Produto:
 
 
 class Venda:
-    def __init__(self, id: int, data: datetime, carrinho: bool, cliente: int):
+    def __init__(
+        self, id: int, data: datetime, carrinho: bool, cliente: int, endereco: int
+    ):
         self.setId(id)
         self.setData(data)
         self.setCarrinho(carrinho)
         self.setCliente(cliente)
+        self.setEndereco(endereco)
 
     def __str__(self):
         texto = ""
@@ -229,6 +232,11 @@ class Venda:
             raise ValueError("O ID não pode ser uma string")
         self.cliente = cliente
 
+    def setEndereco(self, endereco):
+        if isinstance(endereco, str):
+            raise ValueError("O ID não pode ser uma string")
+        self.endereco = endereco
+
     # --------- GETTERS ---------
     def getId(self):
         return self.id
@@ -242,6 +250,9 @@ class Venda:
     def getCliente(self):
         return self.cliente
 
+    def getEndereco(self):
+        return self.endereco
+
     # ---------- JSON -----------
     def to_json(self):
         return {
@@ -249,6 +260,7 @@ class Venda:
             "data": self.data.strftime("%d/%m/%Y"),
             "carrinho": self.carrinho,
             "cliente": self.cliente,
+            "endereco": self.endereco,
         }
 
     def from_json(dic):
@@ -257,6 +269,7 @@ class Venda:
             data=datetime.strptime(dic["data"], "%d/%m/%Y"),
             carrinho=dic["carrinho"],
             cliente=dic["cliente"],
+            endereco=dic["endereco"],
         )
 
         return venda
