@@ -5,33 +5,36 @@ from views.vendaView import VendaView
 from datetime import datetime
 import time
 
-class ClienteUI:   
+
+class ClienteUI:
     def carrinho():
         st.header("Carrinho")
         tab1, tab2 = st.tabs(["Inserir produto", "Visualizar"])
 
-        with tab1: ClienteUI.inserir_produto_carrinho()
-        with tab2: ClienteUI.visualizar_carrinho()
-    
+        with tab1:
+            ClienteUI.inserir_produto_carrinho()
+        with tab2:
+            ClienteUI.visualizar_carrinho()
+
     def inserir_produto_carrinho():
-        st.subheader("Inserir produto no carrinho")      
+        st.subheader("Inserir produto no carrinho")
         carrinho = VendaView.carrinho_visualizar(
             cliente_id=st.session_state["cliente_id"]
         )
-    
+
         produtos = ProdutoView.produto_listar()
         produto = st.selectbox("Produto", produtos)
         qtd = st.number_input("Quantidade", value=1)
-        
-        if (st.button("Inserir")):
-            
+
+        if st.button("Inserir"):
+
             if carrinho["carrinho"] != None:
                 VendaView.carrinho_inserir(
                     data="",
                     carrinho=True,
                     cliente_id=st.session_state["cliente_id"],
                     produto_id=produto.getId(),
-                    qtd=qtd
+                    qtd=qtd,
                 )
 
                 st.success("Produto inserido com sucesso")
@@ -41,94 +44,125 @@ class ClienteUI:
             else:
                 data = datetime.now()
                 carrinho = True
-                
+
                 VendaView.carrinho_inserir(
                     data=data,
                     carrinho=carrinho,
                     cliente_id=st.session_state["cliente_id"],
                     produto_id=produto.getId(),
-                    qtd=qtd
+                    qtd=qtd,
                 )
                 st.success("Produto inserido com sucesso")
                 time.sleep(2)
                 st.rerun()
-        
+
     def visualizar_carrinho():
         st.subheader("Seu carrinho")
-        dados = VendaView.carrinho_visualizar(
-            cliente_id=st.session_state["cliente_id"]
-        )
-        
-        if dados["carrinho"] != None: 
-           
+
+        dados = VendaView.carrinho_visualizar(cliente_id=st.session_state["cliente_id"])
+
+        if dados["carrinho"] is not None:
+
             carrinho = dados["carrinho"]
             cliente = carrinho.getCliente()
-            data = carrinho.getData().strftime('%d/%m/%Y')
+            data = carrinho.getData().strftime("%d/%m/%Y")
+
             preco_total = 0
             prod_list_dict = []
 
             for item in dados["itens"]:
+
+                subtotal = item.getQtd() * item.getPreco()
+                preco_total += subtotal
+
+                produto_nome = "Produto não encontrado"
                 for prod in dados["produtos"]:
-                    if (prod.getId() == item.getProduto()):
-                        prod_dict = {}
-                        prod_dict["produto"] = prod.getDescricao()
-                        prod_dict["quantidade"] = item.getQtd()
-                        prod_dict["preco_unitario"] = item.getPreco()
-                        prod_dict["subtotal"] = prod_dict["preco_unitario"] * prod_dict["quantidade"]
-                        preco_total = preco_total + prod_dict["subtotal"]
-                        prod_list_dict.append(prod_dict)
+                    if prod.getId() == item.getProduto():
+                        produto_nome = prod.getDescricao()
+                        break
 
-            
+                prod_list_dict.append(
+                    {
+                        "produto": produto_nome,
+                        "quantidade": item.getQtd(),
+                        "preco_unitario": item.getPreco(),
+                        "subtotal": subtotal,
+                    }
+                )
+
             st.write(f"Carrinho: Cliente: {cliente} - Criação do carrinho: {data}")
-            df = pd.DataFrame(prod_list_dict)
-            st.dataframe(df, hide_index=True, column_order=["produto", "quantidade", "preco_unitario", "subtotal"])
-            st.write(f"Total: R${preco_total:0.2f}")
 
-            if (st.button("Finalizar compra")):
-                
-                dados = VendaView.carrinho_comprar(
-                    cliente_id=st.session_state["cliente_id"],
-                    comprar=True    
-                )              
+            df = pd.DataFrame(prod_list_dict)
+            st.dataframe(
+                df,
+                hide_index=True,
+                column_order=["produto", "quantidade", "preco_unitario", "subtotal"],
+            )
+
+            st.write(f"Total: R$ {preco_total:.2f}")
+
+            if st.button("Finalizar compra"):
+                VendaView.carrinho_comprar(
+                    cliente_id=st.session_state["cliente_id"], comprar=True
+                )
                 st.success("Compra finalizada")
                 time.sleep(2)
                 st.rerun()
 
-
-            if (st.button("Esvaziar carrinho")):
+            if st.button("Esvaziar carrinho"):
                 VendaView.carrinho_esvaziar(st.session_state["cliente_id"])
                 st.success("Esvaziando...")
                 time.sleep(2)
                 st.rerun()
+
         else:
             st.write("Carrinho vazio")
 
-                
     def listar_minhas_compras():
         st.subheader("Minhas compras")
+
         dados = VendaView.vendas_listar(
-            is_carrinho=False, 
-            cliente_id=st.session_state["cliente_id"]
+            is_carrinho=False, cliente_id=st.session_state["cliente_id"]
         )
+
         for venda in dados["vendas"]:
             prod_list_dict = []
             preco_total = 0
+
             cliente = st.session_state["cliente_nome"]
             data = venda.getData().strftime("%d/%m/%Y")
             venda_id = venda.getId()
+
             for item in dados["itens"]:
-                if (item.getVenda() == venda.getId()):
+                if item.getVenda() == venda_id:
+
+                    subtotal = item.getQtd() * item.getPreco()
+                    preco_total += subtotal
+
+                    produto_nome = "Produto não encontrado"
                     for prod in dados["produtos"]:
-                        if (prod.getId() == item.getProduto()):
-                            prod_dict = {}
-                            prod_dict["produto"] = prod.getDescricao()
-                            prod_dict["quantidade"] = item.getQtd()
-                            prod_dict["preco_unitario"] = item.getPreco()
-                            prod_dict["subtotal"] = prod_dict["preco_unitario"] * prod_dict["quantidade"]
-                            preco_total = preco_total + prod_dict["subtotal"]
-                            prod_list_dict.append(prod_dict)
-            
-            st.write(f"Venda: {venda_id} | Cliente: {cliente} | Realização da venda: {data}")
+                        if prod.getId() == item.getProduto():
+                            produto_nome = prod.getDescricao()
+                            break
+
+                    prod_list_dict.append(
+                        {
+                            "produto": produto_nome,
+                            "quantidade": item.getQtd(),
+                            "preco_unitario": item.getPreco(),
+                            "subtotal": subtotal,
+                        }
+                    )
+
+            st.write(
+                f"Venda: {venda_id} | Cliente: {cliente} | Realização da venda: {data}"
+            )
+
             df = pd.DataFrame(prod_list_dict)
-            st.dataframe(df, hide_index=True, column_order=["produto", "quantidade", "preco_unitario", "subtotal"])
-            st.write(f"Total: R${preco_total:0.2f}")
+            st.dataframe(
+                df,
+                hide_index=True,
+                column_order=["produto", "quantidade", "preco_unitario", "subtotal"],
+            )
+
+            st.write(f"Total: R$ {preco_total:.2f}")

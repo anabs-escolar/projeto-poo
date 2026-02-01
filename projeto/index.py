@@ -89,8 +89,9 @@ class IndexUI:
             IndexUI.menu_visitante()
         else:
             nome = st.session_state["cliente_nome"]
+            adm = st.session_state["cliente_is_admin"]
             st.write(f"Bem-vindo(a), {nome}")
-            if nome == "admin":
+            if adm:
                 IndexUI.menu_admin()
             else:
                 IndexUI.menu_cliente()

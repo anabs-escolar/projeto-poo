@@ -4,41 +4,47 @@
         "nome": "Fabiano",
         "email": "fabiano@gmail.com",
         "senha": "1234",
-        "telefone": "(84) 91234-5678"
+        "telefone": "(84) 91234-5678",
+        "is_admin": false
     },
     {
         "id": 2,
         "nome": "admin",
         "email": "admin",
         "senha": "admin",
-        "telefone": "(84) 91111-1111"
+        "telefone": "(84) 91111-1111",
+        "is_admin": true
     },
     {
         "id": 3,
         "nome": "Wenderson",
         "email": "wenderson@gmail.com",
         "senha": "1234",
-        "telefone": "(84) 91111-1112"
+        "telefone": "(84) 91111-1112",
+        "is_admin": false
     },
     {
         "id": 4,
         "nome": "Amanda",
         "email": "amanda@gmail.com",
         "senha": "1234",
-        "telefone": "(84) 98888-8888"
+        "telefone": "(84) 98888-8888",
+        "is_admin": false
     },
     {
         "id": 5,
         "nome": "Fabiano",
         "email": "fabiano2@gmail.com",
         "senha": "1234",
-        "telefone": "(84) 98123-3333"
+        "telefone": "(84) 98123-3333",
+        "is_admin": false
     },
     {
         "id": 6,
         "nome": "ana",
         "email": "ana@e.com",
         "senha": "f",
-        "telefone": "(84) 91212-1212"
+        "telefone": "(84) 91212-1212",
+        "is_admin": false
     }
 ]

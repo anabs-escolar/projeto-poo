@@ -80,11 +80,17 @@ class Cliente:
             "email": self.email,
             "senha": self.senha,
             "telefone": self.telefone,
+            "is_admin": self.is_admin,
         }
 
     def from_json(dic):
         return Cliente(
-            dic["id"], dic["nome"], dic["email"], dic["senha"], dic["telefone"]
+            dic["id"],
+            dic["nome"],
+            dic["email"],
+            dic["senha"],
+            dic["telefone"],
+            dic["is_admin"],
         )
 
 
