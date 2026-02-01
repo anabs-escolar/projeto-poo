@@ -1,7 +1,18 @@
 import json
-from models import Cliente, Categoria, Produto, Venda, VendaItem, Endereco, Fornecedor, ProdutoEntrega, Entrega
+from models import (
+    Cliente,
+    Categoria,
+    Produto,
+    Venda,
+    VendaItem,
+    Endereco,
+    Fornecedor,
+    ProdutoEntrega,
+    Entrega,
+)
 import os
 from abc import ABC, abstractmethod
+
 
 class DAO(ABC):
     def __init__(self):
@@ -9,10 +20,11 @@ class DAO(ABC):
 
     @classmethod
     def inserir(cls, obj):
-        cls.abrir() 
+        cls.abrir()
         id = 0
         for aux in cls.objetos:
-            if aux.getId() > id: id = aux.getId()
+            if aux.getId() > id:
+                id = aux.getId()
         obj.setId(id + 1)
         cls.objetos.append(obj)
         cls.salvar()
@@ -23,11 +35,19 @@ class DAO(ABC):
         return cls.objetos
 
     @classmethod
+    def listar_id(cls, id):
+        for aux in cls.objetos:
+            if aux.getId() == id:
+                return aux
+        return None
+
+    @classmethod
     def busca_obj(cls, id):
         cls.abrir()
         for obj in cls.objetos:
-            if obj.id == id: return obj
-    
+            if obj.id == id:
+                return obj
+
     @classmethod
     def atualizar(cls, obj):
         aux = cls.busca_obj(obj.id)
@@ -43,7 +63,7 @@ class DAO(ABC):
         if aux != None:
             cls.objetos.remove(aux)
         cls.salvar()
-    
+
     @classmethod
     @abstractmethod
     def get_classe(cls):
@@ -58,12 +78,7 @@ class DAO(ABC):
     def salvar(cls):
         path = os.path.dirname(__file__)
         with open(f"{path}/database/{cls.get_arquivo()}", mode="w") as arquivo:
-            json.dump(
-                cls.objetos,
-                arquivo,
-                default=cls.get_classe().to_json,
-                indent=4
-            )
+            json.dump(cls.objetos, arquivo, default=cls.get_classe().to_json, indent=4)
 
     @classmethod
     def abrir(cls):
@@ -78,7 +93,8 @@ class DAO(ABC):
         except Exception as e:
             print(f"ERRO AO ABRIR: {e}")
 
-class ClienteDAO(DAO):   
+
+class ClienteDAO(DAO):
     @classmethod
     def get_classe(cls):
         return Cliente
@@ -87,7 +103,8 @@ class ClienteDAO(DAO):
     def get_arquivo(cls):
         return "clientes.json"
 
-class CategoriaDAO(DAO):  
+
+class CategoriaDAO(DAO):
     @classmethod
     def get_classe(cls):
         return Categoria
@@ -96,7 +113,7 @@ class CategoriaDAO(DAO):
     def get_arquivo(cls):
         return "categorias.json"
 
-        
+
 class ProdutoDAO(DAO):
     @classmethod
     def get_classe(cls):
@@ -105,6 +122,7 @@ class ProdutoDAO(DAO):
     @classmethod
     def get_arquivo(cls):
         return "produtos.json"
+
 
 class VendaDAO(DAO):
     @classmethod
@@ -118,19 +136,23 @@ class VendaDAO(DAO):
         carrinho_only: False -> Retorna tudo
         """
         cls.abrir()
-        if (carrinho_only):
-            return [i for i in cls.objetos if i.getCliente() == cliente_id and i.getCarrinho()]
-        
-        if (is_carrinho):
+        if carrinho_only:
+            return [
+                i
+                for i in cls.objetos
+                if i.getCliente() == cliente_id and i.getCarrinho()
+            ]
+
+        if is_carrinho:
             if cliente_id != None:
                 return [i for i in cls.objetos if i.getCliente() == cliente_id]
             return cls.objetos
         else:
-            if (cliente_id != None):
+            if cliente_id != None:
                 return [i for i in cls.objetos if i.getCliente() == cliente_id]
-            else:  
+            else:
                 return [i for i in cls.objetos if i.getCarrinho() is not True]
-    
+
     @classmethod
     def get_classe(cls):
         return Venda
@@ -138,16 +160,17 @@ class VendaDAO(DAO):
     @classmethod
     def get_arquivo(cls):
         return "vendas.json"
-        
+
+
 class VendaItemDAO(DAO):
     @classmethod
     def listar(cls, venda=None):
         cls.abrir()
-        if (venda != None):
+        if venda != None:
             return [i for i in cls.objetos if venda.getId() == i.getVenda()]
         else:
             return cls.objetos
-    
+
     @classmethod
     def get_classe(cls):
         return VendaItem
@@ -155,6 +178,7 @@ class VendaItemDAO(DAO):
     @classmethod
     def get_arquivo(cls):
         return "venda-itens.json"
+
 
 class EnderecoDAO(DAO):
     @classmethod
@@ -164,7 +188,8 @@ class EnderecoDAO(DAO):
     @classmethod
     def get_arquivo(cls):
         return "enderecos.json"
-    
+
+
 class FornecedorDAO(DAO):
     @classmethod
     def get_classe(cls):
@@ -173,7 +198,8 @@ class FornecedorDAO(DAO):
     @classmethod
     def get_arquivo(cls):
         return "fornecedores.json"
-    
+
+
 class EntregaDAO(DAO):
     @classmethod
     def get_classe(cls):
@@ -182,7 +208,8 @@ class EntregaDAO(DAO):
     @classmethod
     def get_arquivo(cls):
         return "entregas.json"
-    
+
+
 class ProdutoEntregaDAO(DAO):
     @classmethod
     def get_classe(cls):

@@ -2,7 +2,7 @@ from template.manterCliente import ManterClienteUI
 from template.manterCategoria import ManterCategoriaUI
 from template.manterProduto import ManterProdutoUI
 from template.manterVenda import ManterVendaUI
-from template.manterEndereco import ManterEderecoUI
+from template.manterEndereco import ManterEnderecoUI
 from template.manterFornecedor import ManterFornecedorUI
 from template.manterEntrega import ManterEntregaUI
 from template.login import LoginUI
@@ -29,7 +29,14 @@ class IndexUI:
 
     def menu_cliente():
         op = st.sidebar.selectbox(
-            "Menu", ["Listar produtos", "Carrinho", "Listar minhas compras", "Sair"]
+            "Menu",
+            [
+                "Listar produtos",
+                "Carrinho",
+                "Listar minhas compras",
+                "Endereços",
+                "Sair",
+            ],
         )
 
         if op == "Listar produtos":
@@ -38,31 +45,39 @@ class IndexUI:
             ClienteUI.carrinho()
         if op == "Listar minhas compras":
             ClienteUI.listar_minhas_compras()
+        if op == "Endereços":
+            ManterEnderecoUI.main()
         if op == "Sair":
             IndexUI.logout()
 
     def menu_admin():
-        op = st.sidebar.selectbox("Menu", [
-            "Cadastro de clientes",
-            "Cadastro de categorias",
-            "Cadastro de produtos",
-            "Cadastro de vendas",
-            "Cadastro de endereços",
-            "Cadastro de fornecedores",
-            "Cadastro de entregas",
-            "Reajustar produtos",
-            "Sair"
-        ])
+        op = st.sidebar.selectbox(
+            "Menu",
+            [
+                "Cadastro de clientes",
+                "Cadastro de categorias",
+                "Cadastro de produtos",
+                "Cadastro de vendas",
+                "Cadastro de fornecedores",
+                "Cadastro de entregas",
+                "Sair",
+            ],
+        )
 
-        if op == "Cadastro de categorias": ManterCategoriaUI.main()
-        if op == "Cadastro de clientes": ManterClienteUI.main()
-        if op == "Cadastro de produtos": ManterProdutoUI.main()
-        if op == "Cadastro de vendas": ManterVendaUI.main()
-        if op == "Cadastro de endereços": ManterEderecoUI.main()
-        if op == "Cadastro de fornecedores": ManterFornecedorUI.main()
-        if op == "Cadastro de entregas": ManterEntregaUI.main()
-        if op == "Reajustar produtos": ManterProdutoUI.main()
-        if op == "Sair": IndexUI.logout()
+        if op == "Cadastro de categorias":
+            ManterCategoriaUI.main()
+        if op == "Cadastro de clientes":
+            ManterClienteUI.main()
+        if op == "Cadastro de produtos":
+            ManterProdutoUI.main()
+        if op == "Cadastro de vendas":
+            ManterVendaUI.main()
+        if op == "Cadastro de fornecedores":
+            ManterFornecedorUI.main()
+        if op == "Cadastro de entregas":
+            ManterEntregaUI.main()
+        if op == "Sair":
+            IndexUI.logout()
 
     def logout():
         del st.session_state["cliente_id"]

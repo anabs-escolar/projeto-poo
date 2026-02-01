@@ -340,24 +340,24 @@ class Endereco:
     def __init__(
         self,
         id: int,
-        logradouro: str,
-        numero: str,
-        complemento: str,
-        bairro: str,
-        cidade: str,
-        estado: str,
+        log: str,
+        num: str,
+        com: str,
+        bai: str,
+        cid: str,
+        est: str,
         cep: str,
-        id_cliente: int
+        cli: int,
     ):
         self.setId(id)
-        self.setLogradouro(logradouro)
-        self.setNumero(numero)
-        self.setComplemento(complemento)
-        self.setBairro(bairro)
-        self.setCidade(cidade)
-        self.setEstado(estado)
+        self.setLogradouro(log)
+        self.setNumero(num)
+        self.setComplemento(com)
+        self.setBairro(bai)
+        self.setCidade(cid)
+        self.setEstado(est)
         self.setCEP(cep)
-        self.setIdCliente(id_cliente)
+        self.setIdCliente(cli)
 
     def __str__(self):
         return f"{self.getLogradouro()} - N° {self.getNumero()} - {self.getCidade()}/{self.getEstado()}"
@@ -415,7 +415,7 @@ class Endereco:
 
     def getCep(self) -> str:
         return self.cep
-    
+
     def getIdCliente(self) -> int:
         return self.id_cliente
 
@@ -444,7 +444,7 @@ class Endereco:
             cid=dic["cidade"],
             est=dic["estado"],
             cep=dic["cep"],
-            id_cliente=dic["id_cliente"]
+            cli=dic["id_cliente"],
         )
 
         return endereco
@@ -454,13 +454,10 @@ class Endereco:
 
 
 class Fornecedor:
-    def __init__(self, id: int, cnpj: str, razao_social: str):
+    def __init__(self, id: int, cnpj: str, ras: str):
         self.setId(id)
         self.setCNPJ(cnpj)
-        self.setRazaoSocial(razao_social)
-
-    def __str__(self):
-        return f"{self.getCNPJ()} - {self.getRazaoSocial()}"
+        self.setRazaoSocial(ras)
 
     # --- SETTERS ---
     def setId(self, id: int):
@@ -469,8 +466,8 @@ class Fornecedor:
     def setCNPJ(self, cnpj: str):
         self.cnpj = cnpj
 
-    def setRazaoSocial(self, razao_social: str):
-        self.razao_social = razao_social
+    def setRazaoSocial(self, ras: str):
+        self.razao_social = ras
 
     def __str__(self):
         return f"{self.getRazaoSocial()} (CNPJ: {self.getCNPJ()})"
@@ -497,7 +494,7 @@ class Fornecedor:
         fornecedor = Fornecedor(
             id=dic["id"],
             cnpj=dic["cnpj"],
-            razao_social=dic["razao_social"],
+            ras=dic["razao_social"],
         )
 
         return fornecedor
